@@ -1,5 +1,5 @@
 -- ==========================================================
--- SCRIPT: √12kientomato Hub Pro Max (Multi-Tab & Smart Noclip)
+-- SCRIPT: √12kientomato Hub Pro Max (Extreme FixLag & Smart Noclip)
 -- ==========================================================
 
 local Players = game:GetService("Players")
@@ -14,11 +14,12 @@ local currentLang = "vi"
 local translations = {
     vi = {
         title = "√12kientomato Hub Pro Max",
-        tabFixLag = "⚡ Fix Lag",
+        tabFixLag = "⚡ Fix Lag (1-100)",
         tabUtils = "🛠️ Tiện Ích",
-        fixLight = "🔹 Fix Lag Nhẹ (30% - Tắt Bóng)",
-        fixMed = "🔸 Fix Lag Vừa (70% - Ẩn Decal/Texture)",
-        fixMax = "🚀 Siêu Fix Lag (100% - Tối Ưu Toàn Bộ)",
+        fixLight = "🔹 Fix Lag Nhẹ (Cấp 25)",
+        fixMed = "🔸 Fix Lag Vừa (Cấp 50 - Xi măng)",
+        fixHeavy = "🔥 Fix Lag Nặng (Cấp 75 - Xóa Decal/Mesh)",
+        fixMax = "🚀 Siêu Fix Lag 100% (Xóa Toàn Bộ Map)",
         restore = "🔄 Khôi Phục Gốc",
         noclipOff = "👻 Noclip: ĐANG TẮT",
         noclipOn = "👻 Noclip: ĐANG BẬT",
@@ -29,11 +30,12 @@ local translations = {
     },
     en = {
         title = "√12kientomato Hub Pro Max",
-        tabFixLag = "⚡ Fix Lag",
+        tabFixLag = "⚡ Fix Lag (1-100)",
         tabUtils = "🛠️ Utilities",
-        fixLight = "🔹 Light Fix (30% - Shadows)",
-        fixMed = "🔸 Medium Fix (70% - Textures)",
-        fixMax = "🚀 Max Fix (100% - Extreme Optimization)",
+        fixLight = "🔹 Light Fix (Lv 25)",
+        fixMed = "🔸 Medium Fix (Lv 50 - Plastic)",
+        fixHeavy = "🔥 Heavy Fix (Lv 75 - Clean Textures)",
+        fixMax = "🚀 Max Fix 100% (Wipe Map)",
         restore = "🔄 Restore Original",
         noclipOff = "👻 Noclip: OFF",
         noclipOn = "👻 Noclip: ON",
@@ -44,17 +46,15 @@ local translations = {
     }
 }
 
--- Lưu trạng thái ban đầu để restore
+-- Lưu trạng thái gốc để restore
 local originalSettings = {
     Lighting = {
         GlobalShadows = Lighting.GlobalShadows,
         FogEnd = Lighting.FogEnd,
-        Brightness = Lighting.Brightness
+        Brightness = Lighting.Brightness,
+        Ambient = Lighting.Ambient
     },
-    Terrain = {
-        WaterTransparency = Workspace.Terrain.WaterTransparency
-    },
-    Parts = {}
+    PartsData = {}
 }
 
 -- Xóa GUI cũ
@@ -149,7 +149,6 @@ tabUtilsBtn.Text = translations[currentLang].tabUtils
 tabUtilsBtn.Parent = tabHeaderFrame
 Instance.new("UICorner", tabUtilsBtn).CornerRadius = UDim.new(0, 6)
 
--- Containers cho từng Tab
 local contentFixLag = Instance.new("ScrollingFrame")
 contentFixLag.Size = UDim2.new(1, -10, 1, -80)
 contentFixLag.Position = UDim2.new(0, 5, 0, 75)
@@ -178,7 +177,6 @@ layoutUtils.Padding = UDim.new(0, 8)
 layoutUtils.HorizontalAlignment = Enum.HorizontalAlignment.Center
 layoutUtils.Parent = contentUtils
 
--- Xử lý chuyển tab
 tabFixBtn.MouseButton1Click:Connect(function()
     contentFixLag.Visible = true
     contentUtils.Visible = false
@@ -212,64 +210,90 @@ local function makeBtn(parent, textKey, color, cb)
     return b
 end
 
--- ==================== TAB 1: FIX LAG (Phân Cấp Rõ Rệt) ====================
+-- ==================== FIX LAG PHÂN CẤP (1% ĐẾN 100% EXTREME) ====================
 
 makeBtn(contentFixLag, "fixLight", Color3.fromRGB(60, 60, 90), function()
     Lighting.GlobalShadows = false
     Lighting.FogEnd = 999999
-    print("[√12] Fix Lag Cấp 1: Đã tắt bóng đổ và tối ưu tầm nhìn.")
+    print("[√12] Fix Lag Cấp 25: Đã tối ưu ánh sáng.")
 end)
 
 makeBtn(contentFixLag, "fixMed", Color3.fromRGB(80, 70, 40), function()
     Lighting.GlobalShadows = false
-    Lighting.Brightness = 2
-    for _, obj in ipairs(Workspace:GetDescendants()) do
-        if obj:IsA("Decal") or obj:IsA("Texture") then
-            obj.Transparency = 1
-        end
-    end
-    print("[√12] Fix Lag Cấp 2: Đã ẩn toàn bộ Decal và Texture.")
-end)
-
-makeBtn(contentFixLag, "fixMax", Color3.fromRGB(120, 40, 40), function()
-    Lighting.GlobalShadows = false
-    Workspace.Terrain.WaterTransparency = 1
     for _, obj in ipairs(Workspace:GetDescendants()) do
         if obj:IsA("BasePart") then
-            if not originalSettings.Parts[obj] then
-                originalSettings.Parts[obj] = obj.Material
+            if not originalSettings.PartsData[obj] then
+                originalSettings.PartsData[obj] = {material = obj.Material, color = obj.Color, transparency = obj.Transparency}
             end
             obj.Material = Enum.Material.SmoothPlastic
-            obj.CastShadow = false
-        elseif obj:IsA("ParticleEmitter") or obj:IsA("Trail") or obj:IsA("Fire") or obj:IsA("Smoke") or obj:IsA("Sparkles") then
-            obj.Enabled = false
-        elseif obj:IsA("Decal") or obj:IsA("Texture") then
-            obj.Transparency = 1
         end
     end
-    print("[√12] Fix Lag Cấp 3 (100%): Tối ưu toàn bộ vật liệu và hiệu ứng tối đa.")
+    print("[√12] Fix Lag Cấp 50: Đã chuyển đổi toàn bộ vật liệu sang dạng xi măng/nhựa láng mịn.")
+end)
+
+makeBtn(contentFixLag, "fixHeavy", Color3.fromRGB(100, 50, 40), function()
+    Lighting.GlobalShadows = false
+    for _, obj in ipairs(Workspace:GetDescendants()) do
+        if obj:IsA("Decal") or obj:IsA("Texture") or obj:IsA("SpecialMesh") or obj:IsA("ParticleEmitter") or obj:IsA("Fire") or obj:IsA("Smoke") then
+            obj:Destroy()
+        end
+    end
+    print("[√12] Fix Lag Cấp 75: Đã xóa toàn bộ decal, texture và hiệu ứng phụ.")
+end)
+
+makeBtn(contentFixLag, "fixMax", Color3.fromRGB(150, 30, 30), function()
+    Lighting.GlobalShadows = false
+    Lighting.Brightness = 0
+    Workspace.Terrain.WaterTransparency = 1
+    -- Cấp 100: Xóa triệt để các vật thể gây nặng máy / xóa bớt map không cần thiết
+    for _, obj in ipairs(Workspace:GetDescendants()) do
+        if obj:IsA("BasePart") and obj.Name ~= "HumanoidRootPart" and not obj:IsDescendantOf(localPlayer.Character or grayish) then
+            if not originalSettings.PartsData[obj] then
+                originalSettings.PartsData[obj] = {material = obj.Material, color = obj.Color, transparency = obj.Transparency}
+            end
+            -- Biến các part thành trong suốt hoặc xóa hẳn nếu không phải sàn chính để cực kỳ nhẹ
+            if obj.Size.Magnitude > 150 then
+                obj.Transparency = 0.5
+                obj.Material = Enum.Material.SmoothPlastic
+            else
+                obj.Transparency = 1
+                obj.CanCollide = false
+            end
+        elseif obj:IsA("Model") and obj ~= localPlayer.Character and obj ~= Workspace:FindFirstChild("Terrain") then
+            pcall(function()
+                for _, p in ipairs(obj:GetDescendants()) do
+                    if p:IsA("BasePart") then
+                        p.Transparency = 1
+                        p.CanCollide = false
+                    end
+                end
+            end)
+        end
+    end
+    print("[√12] SIÊU FIX LAG 100%: Đã xóa sổ và tối ưu toàn bộ cấu trúc map cực đại!")
 end)
 
 makeBtn(contentFixLag, "restore", Color3.fromRGB(40, 100, 40), function()
     Lighting.GlobalShadows = originalSettings.Lighting.GlobalShadows
     Lighting.FogEnd = originalSettings.Lighting.FogEnd
     Lighting.Brightness = originalSettings.Lighting.Brightness
-    Workspace.Terrain.WaterTransparency = originalSettings.Terrain.WaterTransparency
-    for obj, mat in pairs(originalSettings.Parts) do
+    Workspace.Terrain.WaterTransparency = 0
+    for obj, data in pairs(originalSettings.PartsData) do
         if obj and obj.Parent then
-            obj.Material = mat
-            obj.CastShadow = true
+            obj.Transparency = data.transparency or 0
+            obj.Material = data.material
+            obj.CanCollide = true
         end
     end
-    print("[√12] Đã khôi phục cài đặt gốc.")
+    print("[√12] Đã khôi phục trạng thái map ban đầu.")
 end)
 
--- ==================== TAB 2: TIỆN ÍCH (Smart Noclip & Status Fix) ====================
+-- ==================== TIỆN ÍCH (NOCLIP & STATUS FIX) ====================
 
--- Noclip thông minh (Chỉ xuyên tường, giữ nguyên chân đứng trên đất)
 local noclipActive = false
 local noclipBtn = makeBtn(contentUtils, "noclipOff", Color3.fromRGB(50, 50, 50), function()
     noclipActive = not noclipActive
+    -- Cập nhật tức thì trạng thái nút bấm
     if noclipActive then
         noclipBtn.Text = translations[currentLang].noclipOn
         noclipBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 100)
@@ -279,23 +303,23 @@ local noclipBtn = makeBtn(contentUtils, "noclipOff", Color3.fromRGB(50, 50, 50),
     end
 end)
 
+-- Noclip thông minh: Xuyên tường nhưng giữ vững chân trên mặt đất
 RunService.Stepped:Connect(function()
     if noclipActive and localPlayer.Character then
-        local humanoidRootPart = localPlayer.Character:FindFirstChild("HumanoidRootPart")
-        for _, part in ipairs(localPlayer.Character:GetDescendants()) do
+        local char = localPlayer.Character
+        for _, part in ipairs(char:GetDescendants()) do
             if part:IsA("BasePart") then
-                -- Giữ nguyên phần chân (HumanoidRootPart hoặc LowerTorso/LeftFoot) để không bị rơi xuống void
-                if part.Name ~= "HumanoidRootPart" and part.Name ~= "LowerTorso" then
-                    part.CanCollide = false
-                else
+                -- Cho phép xuyên qua mọi thứ TRỪ phần chân (giúp nhân vật không bị rơi xuống void)
+                if part.Name == "HumanoidRootPart" or part.Name == "LeftFoot" or part.Name == "RightFoot" or part.Name == "LowerTorso" then
                     part.CanCollide = true
+                else
+                    part.CanCollide = false
                 end
             end
         end
     end
 end)
 
--- Anti-Void
 local antiVoidActive = false
 local antiVoidPart = nil
 local antiVoidBtn = makeBtn(contentUtils, "antiVoidOff", Color3.fromRGB(50, 50, 50), function()
@@ -305,7 +329,8 @@ local antiVoidBtn = makeBtn(contentUtils, "antiVoidOff", Color3.fromRGB(50, 50, 
         antiVoidBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 100)
         if not antiVoidPart then
             antiVoidPart = Instance.new("Part")
-            antiVoidPart.Size = Vector3.new(3000, 5, 3000)
+            antiVoidPart.Name = "AntiVoidPlatform"
+            antiVoidPart.Size = Vector3.new(5000, 5, 5000)
             antiVoidPart.Position = Vector3.new(0, -50, 0)
             antiVoidPart.Anchored = true
             antiVoidPart.Transparency = 0.9
@@ -321,7 +346,6 @@ local antiVoidBtn = makeBtn(contentUtils, "antiVoidOff", Color3.fromRGB(50, 50, 
     end
 end)
 
--- Fast Interact
 makeBtn(contentUtils, "fastInteract", Color3.fromRGB(60, 100, 60), function()
     for _, obj in ipairs(Workspace:GetDescendants()) do
         if obj:IsA("ProximityPrompt") then
@@ -335,10 +359,9 @@ makeBtn(contentUtils, "fastInteract", Color3.fromRGB(60, 100, 60), function()
             obj.MaxActivationDistance = math.max(obj.MaxActivationDistance, 32)
         end
     end)
-    print("[√12] Đã kích hoạt nhặt vật phẩm tức thì.")
+    print("[√12] Đã bật nhặt vật phẩm tức thì.")
 end)
 
--- Nút đổi ngôn ngữ
 makeBtn(contentUtils, "langBtn", Color3.fromRGB(70, 50, 90), function()
     currentLang = (currentLang == "vi") and "en" or "vi"
     titleLabel.Text = translations[currentLang].title
