@@ -1,5 +1,5 @@
 -- ==========================================================
--- SCRIPT: √12kientomato Hub Pro Max (No Loading, Direct Open)
+-- SCRIPT: √12kientomato Hub Pro Max (Multi-Tab & Smart Noclip)
 -- ==========================================================
 
 local Players = game:GetService("Players")
@@ -9,38 +9,36 @@ local Workspace = game:GetService("Workspace")
 local CoreGui = game:GetService("CoreGui")
 
 local localPlayer = Players.LocalPlayer
-
--- Ngôn ngữ mặc định
 local currentLang = "vi"
 
 local translations = {
     vi = {
         title = "√12kientomato Hub Pro Max",
-        fixLagTitle = "--- HỆ THỐNG FIX LAG (1% - 100%) ---",
-        fixLight = "⚡ Fix Lag Nhẹ (Cấp độ 1% - 30%)",
-        fixMed = "⚡ Fix Lag Trung Bình (Cấp độ 31% - 70%)",
-        fixMax = "⚡ Siêu Fix Lag Tối Đa (Cấp độ 100%)",
-        restore = "🔄 Khôi Phục Trạng Thái Ban Đầu",
-        utilityTitle = "--- TIỆN ÍCH GAMEPLAY ---",
-        noclipOff = "👻 Bật/Tắt Noclip: ĐANG TẮT",
-        noclipOn = "👻 Bật/Tắt Noclip: ĐANG BẬT",
-        antiVoidOff = "🛡️ Chống Rơi Xuống Void: ĐANG TẮT",
-        antiVoidOn = "🛡️ Chống Rơi Xuống Void: ĐANG BẬT",
-        fastInteract = "⚡ Nhặt Vật Phẩm Nhanh",
+        tabFixLag = "⚡ Fix Lag",
+        tabUtils = "🛠️ Tiện Ích",
+        fixLight = "🔹 Fix Lag Nhẹ (30% - Tắt Bóng)",
+        fixMed = "🔸 Fix Lag Vừa (70% - Ẩn Decal/Texture)",
+        fixMax = "🚀 Siêu Fix Lag (100% - Tối Ưu Toàn Bộ)",
+        restore = "🔄 Khôi Phục Gốc",
+        noclipOff = "👻 Noclip: ĐANG TẮT",
+        noclipOn = "👻 Noclip: ĐANG BẬT",
+        antiVoidOff = "🛡️ Chống Void: ĐANG TẮT",
+        antiVoidOn = "🛡️ Chống Void: ĐANG BẬT",
+        fastInteract = "⚡ Nhặt Nhanh (0s)",
         langBtn = "🌐 Ngôn ngữ: Tiếng Việt"
     },
     en = {
         title = "√12kientomato Hub Pro Max",
-        fixLagTitle = "--- FIX LAG SYSTEM (1% - 100%) ---",
-        fixLight = "⚡ Light Fix Lag (Level 1% - 30%)",
-        fixMed = "⚡ Medium Fix Lag (Level 31% - 70%)",
-        fixMax = "⚡ Max Fix Lag (Level 100%)",
-        restore = "🔄 Restore Original State",
-        utilityTitle = "--- GAMEPLAY UTILITIES ---",
-        noclipOff = "👻 Toggle Noclip: OFF",
-        noclipOn = "👻 Toggle Noclip: ON",
-        antiVoidOff = "🛡️ Anti-Void Platform: OFF",
-        antiVoidOn = "🛡️ Anti-Void Platform: ON",
+        tabFixLag = "⚡ Fix Lag",
+        tabUtils = "🛠️ Utilities",
+        fixLight = "🔹 Light Fix (30% - Shadows)",
+        fixMed = "🔸 Medium Fix (70% - Textures)",
+        fixMax = "🚀 Max Fix (100% - Extreme Optimization)",
+        restore = "🔄 Restore Original",
+        noclipOff = "👻 Noclip: OFF",
+        noclipOn = "👻 Noclip: ON",
+        antiVoidOff = "🛡️ Anti-Void: OFF",
+        antiVoidOn = "🛡️ Anti-Void: ON",
         fastInteract = "⚡ Fast Collect",
         langBtn = "🌐 Language: English"
     }
@@ -51,38 +49,29 @@ local originalSettings = {
     Lighting = {
         GlobalShadows = Lighting.GlobalShadows,
         FogEnd = Lighting.FogEnd,
-        Brightness = Lighting.Brightness,
-        ClockTime = Lighting.ClockTime
+        Brightness = Lighting.Brightness
     },
     Terrain = {
-        WaterWaveSize = Workspace.Terrain.WaterWaveSize,
-        WaterWaveSpeed = Workspace.Terrain.WaterWaveSpeed,
-        WaterTransparency = Workspace.Terrain.WaterTransparency,
-        WaterReflectance = Workspace.Terrain.WaterReflectance
+        WaterTransparency = Workspace.Terrain.WaterTransparency
     },
     Parts = {}
 }
 
--- Xóa GUI cũ nếu đang chạy
+-- Xóa GUI cũ
 if CoreGui:FindFirstChild("Sqrt12KienTomatoHub") then
     CoreGui.Sqrt12KienTomatoHub:Destroy()
 end
 
--- Tạo ScreenGui chính
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "Sqrt12KienTomatoHub"
 screenGui.ResetOnSpawn = false
-pcall(function()
-    screenGui.Parent = CoreGui
-end)
+pcall(function() screenGui.Parent = CoreGui end)
 if screenGui.Parent ~= CoreGui then
     screenGui.Parent = localPlayer:WaitForChild("PlayerGui")
 end
 
--- ==================== NÚT TOGGLE & MENU CHÍNH ====================
-
+-- Nút Toggle Chữ K
 local toggleBtn = Instance.new("TextButton")
-toggleBtn.Name = "ToggleBtn"
 toggleBtn.Size = UDim2.new(0, 45, 0, 45)
 toggleBtn.Position = UDim2.new(0, 20, 0, 100)
 toggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
@@ -93,20 +82,18 @@ toggleBtn.Font = Enum.Font.GothamBold
 toggleBtn.Text = "K"
 toggleBtn.Active = true
 toggleBtn.Draggable = true
-toggleBtn.Visible = true
 toggleBtn.Parent = screenGui
 
 local cornerToggle = Instance.new("UICorner")
 cornerToggle.CornerRadius = UDim.new(1, 0)
 cornerToggle.Parent = toggleBtn
 
+-- Menu Chính
 local mainFrame = Instance.new("Frame")
-mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 320, 0, 420)
-mainFrame.Position = UDim2.new(0.5, -160, 0.5, -210)
+mainFrame.Size = UDim2.new(0, 320, 0, 380)
+mainFrame.Position = UDim2.new(0.5, -160, 0.5, -190)
 mainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 mainFrame.BorderSizePixel = 0
-mainFrame.Visible = true
 mainFrame.Active = true
 mainFrame.Draggable = true
 mainFrame.Parent = screenGui
@@ -116,10 +103,10 @@ cornerMain.CornerRadius = UDim.new(0, 8)
 cornerMain.Parent = mainFrame
 
 local titleLabel = Instance.new("TextLabel")
-titleLabel.Size = UDim2.new(1, 0, 0, 40)
+titleLabel.Size = UDim2.new(1, 0, 0, 35)
 titleLabel.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 titleLabel.TextColor3 = Color3.fromRGB(0, 255, 128)
-titleLabel.TextSize = 15
+titleLabel.TextSize = 14
 titleLabel.Font = Enum.Font.GothamBold
 titleLabel.Text = translations[currentLang].title
 titleLabel.Parent = mainFrame
@@ -132,92 +119,120 @@ toggleBtn.MouseButton1Click:Connect(function()
     mainFrame.Visible = not mainFrame.Visible
 end)
 
-local scrollingFrame = Instance.new("ScrollingFrame")
-scrollingFrame.Size = UDim2.new(1, -10, 1, -50)
-scrollingFrame.Position = UDim2.new(0, 5, 0, 45)
-scrollingFrame.BackgroundTransparency = 1
-scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 720)
-scrollingFrame.ScrollBarThickness = 4
-scrollingFrame.Parent = mainFrame
+-- ==================== HỆ THỐNG TAB ====================
+local tabHeaderFrame = Instance.new("Frame")
+tabHeaderFrame.Size = UDim2.new(1, -10, 0, 30)
+tabHeaderFrame.Position = UDim2.new(0, 5, 0, 40)
+tabHeaderFrame.BackgroundTransparency = 1
+tabHeaderFrame.Parent = mainFrame
 
-local uiLayout = Instance.new("UIListLayout")
-uiLayout.Padding = UDim.new(0, 8)
-uiLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-uiLayout.Parent = scrollingFrame
+local tabFixBtn = Instance.new("TextButton")
+tabFixBtn.Size = UDim2.new(0.48, 0, 1, 0)
+tabFixBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 100)
+tabFixBtn.BorderSizePixel = 0
+tabFixBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+tabFixBtn.Font = Enum.Font.GothamBold
+tabFixBtn.TextSize = 12
+tabFixBtn.Text = translations[currentLang].tabFixLag
+tabFixBtn.Parent = tabHeaderFrame
+Instance.new("UICorner", tabFixBtn).CornerRadius = UDim.new(0, 6)
 
-local function createSectionTitle(textKey)
-    local lbl = Instance.new("TextLabel")
-    lbl.Name = "Section_" .. textKey
-    lbl.Size = UDim2.new(1, -10, 0, 25)
-    lbl.BackgroundTransparency = 1
-    lbl.TextColor3 = Color3.fromRGB(200, 200, 200)
-    lbl.TextSize = 13
-    lbl.Font = Enum.Font.GothamBold
-    lbl.TextXAlignment = Enum.TextXAlignment.Left
-    lbl.Text = translations[currentLang][textKey] or textKey
-    lbl.Parent = scrollingFrame
-    return lbl
-end
+local tabUtilsBtn = Instance.new("TextButton")
+tabUtilsBtn.Size = UDim2.new(0.48, 0, 1, 0)
+tabUtilsBtn.Position = UDim2.new(0.52, 0, 0, 0)
+tabUtilsBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+tabUtilsBtn.BorderSizePixel = 0
+tabUtilsBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
+tabUtilsBtn.Font = Enum.Font.GothamBold
+tabUtilsBtn.TextSize = 12
+tabUtilsBtn.Text = translations[currentLang].tabUtils
+tabUtilsBtn.Parent = tabHeaderFrame
+Instance.new("UICorner", tabUtilsBtn).CornerRadius = UDim.new(0, 6)
 
-local function createButton(textKey, color, callback)
-    local btn = Instance.new("TextButton")
-    btn.Name = "Btn_" .. textKey
-    btn.Size = UDim2.new(1, -10, 0, 35)
-    btn.BackgroundColor3 = color or Color3.fromRGB(40, 40, 40)
-    btn.BorderSizePixel = 0
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.TextSize = 13
-    btn.Font = Enum.Font.GothamSemibold
-    btn.Text = translations[currentLang][textKey] or textKey
-    btn.Parent = scrollingFrame
-    
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 6)
-    corner.Parent = btn
-    
-    btn.MouseButton1Click:Connect(callback)
-    return btn
-end
+-- Containers cho từng Tab
+local contentFixLag = Instance.new("ScrollingFrame")
+contentFixLag.Size = UDim2.new(1, -10, 1, -80)
+contentFixLag.Position = UDim2.new(0, 5, 0, 75)
+contentFixLag.BackgroundTransparency = 1
+contentFixLag.CanvasSize = UDim2.new(0, 0, 0, 260)
+contentFixLag.ScrollBarThickness = 3
+contentFixLag.Visible = true
+contentFixLag.Parent = mainFrame
 
--- ==================== CÁC CHỨC NĂNG ====================
+local layoutFix = Instance.new("UIListLayout")
+layoutFix.Padding = UDim.new(0, 8)
+layoutFix.HorizontalAlignment = Enum.HorizontalAlignment.Center
+layoutFix.Parent = contentFixLag
 
-createSectionTitle("fixLagTitle")
+local contentUtils = Instance.new("ScrollingFrame")
+contentUtils.Size = UDim2.new(1, -10, 1, -80)
+contentUtils.Position = UDim2.new(0, 5, 0, 75)
+contentUtils.BackgroundTransparency = 1
+contentUtils.CanvasSize = UDim2.new(0, 0, 0, 260)
+contentUtils.ScrollBarThickness = 3
+contentUtils.Visible = false
+contentUtils.Parent = mainFrame
 
-createButton("fixLight", Color3.fromRGB(60, 60, 90), function()
-    Lighting.GlobalShadows = false
-    Lighting.FogEnd = 999999
-    for _, obj in ipairs(Workspace:GetDescendants()) do
-        if obj:IsA("BasePart") and obj.Material ~= Enum.Material.SmoothPlastic then
-            if not originalSettings.Parts[obj] then
-                originalSettings.Parts[obj] = obj.Material
-            end
-            obj.Material = Enum.Material.SmoothPlastic
-        end
-    end
+local layoutUtils = Instance.new("UIListLayout")
+layoutUtils.Padding = UDim.new(0, 8)
+layoutUtils.HorizontalAlignment = Enum.HorizontalAlignment.Center
+layoutUtils.Parent = contentUtils
+
+-- Xử lý chuyển tab
+tabFixBtn.MouseButton1Click:Connect(function()
+    contentFixLag.Visible = true
+    contentUtils.Visible = false
+    tabFixBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 100)
+    tabFixBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    tabUtilsBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    tabUtilsBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
 end)
 
-createButton("fixMed", Color3.fromRGB(80, 70, 40), function()
+tabUtilsBtn.MouseButton1Click:Connect(function()
+    contentFixLag.Visible = false
+    contentUtils.Visible = true
+    tabUtilsBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 100)
+    tabUtilsBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    tabFixBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    tabFixBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
+end)
+
+local function makeBtn(parent, textKey, color, cb)
+    local b = Instance.new("TextButton")
+    b.Size = UDim2.new(1, -10, 0, 38)
+    b.BackgroundColor3 = color
+    b.BorderSizePixel = 0
+    b.TextColor3 = Color3.fromRGB(255, 255, 255)
+    b.TextSize = 12
+    b.Font = Enum.Font.GothamSemibold
+    b.Text = translations[currentLang][textKey] or textKey
+    b.Parent = parent
+    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 6)
+    b.MouseButton1Click:Connect(cb)
+    return b
+end
+
+-- ==================== TAB 1: FIX LAG (Phân Cấp Rõ Rệt) ====================
+
+makeBtn(contentFixLag, "fixLight", Color3.fromRGB(60, 60, 90), function()
+    Lighting.GlobalShadows = false
+    Lighting.FogEnd = 999999
+    print("[√12] Fix Lag Cấp 1: Đã tắt bóng đổ và tối ưu tầm nhìn.")
+end)
+
+makeBtn(contentFixLag, "fixMed", Color3.fromRGB(80, 70, 40), function()
     Lighting.GlobalShadows = false
     Lighting.Brightness = 2
-    Workspace.Terrain.WaterWaveSize = 0
-    Workspace.Terrain.WaterWaveSpeed = 0
-    Workspace.Terrain.WaterTransparency = 0
     for _, obj in ipairs(Workspace:GetDescendants()) do
-        if obj:IsA("BasePart") then
-            if not originalSettings.Parts[obj] then
-                originalSettings.Parts[obj] = obj.Material
-            end
-            obj.Material = Enum.Material.SmoothPlastic
-            obj.Reflectance = 0
-        elseif obj:IsA("Decal") or obj:IsA("Texture") then
+        if obj:IsA("Decal") or obj:IsA("Texture") then
             obj.Transparency = 1
         end
     end
+    print("[√12] Fix Lag Cấp 2: Đã ẩn toàn bộ Decal và Texture.")
 end)
 
-createButton("fixMax", Color3.fromRGB(120, 40, 40), function()
+makeBtn(contentFixLag, "fixMax", Color3.fromRGB(120, 40, 40), function()
     Lighting.GlobalShadows = false
-    Lighting.Brightness = 1
     Workspace.Terrain.WaterTransparency = 1
     for _, obj in ipairs(Workspace:GetDescendants()) do
         if obj:IsA("BasePart") then
@@ -225,81 +240,89 @@ createButton("fixMax", Color3.fromRGB(120, 40, 40), function()
                 originalSettings.Parts[obj] = obj.Material
             end
             obj.Material = Enum.Material.SmoothPlastic
-            obj.Reflectance = 0
             obj.CastShadow = false
         elseif obj:IsA("ParticleEmitter") or obj:IsA("Trail") or obj:IsA("Fire") or obj:IsA("Smoke") or obj:IsA("Sparkles") then
             obj.Enabled = false
         elseif obj:IsA("Decal") or obj:IsA("Texture") then
             obj.Transparency = 1
-        elseif obj:IsA("SpecialMesh") or obj:IsA("MeshPart") then
-            obj.TextureID = ""
         end
     end
+    print("[√12] Fix Lag Cấp 3 (100%): Tối ưu toàn bộ vật liệu và hiệu ứng tối đa.")
 end)
 
-createButton("restore", Color3.fromRGB(40, 100, 40), function()
+makeBtn(contentFixLag, "restore", Color3.fromRGB(40, 100, 40), function()
     Lighting.GlobalShadows = originalSettings.Lighting.GlobalShadows
     Lighting.FogEnd = originalSettings.Lighting.FogEnd
     Lighting.Brightness = originalSettings.Lighting.Brightness
-    Workspace.Terrain.WaterWaveSize = originalSettings.Terrain.WaterWaveSize
-    Workspace.Terrain.WaterWaveSpeed = originalSettings.Terrain.WaterWaveSpeed
     Workspace.Terrain.WaterTransparency = originalSettings.Terrain.WaterTransparency
-    
     for obj, mat in pairs(originalSettings.Parts) do
         if obj and obj.Parent then
             obj.Material = mat
             obj.CastShadow = true
         end
     end
+    print("[√12] Đã khôi phục cài đặt gốc.")
 end)
 
-createSectionTitle("utilityTitle")
+-- ==================== TAB 2: TIỆN ÍCH (Smart Noclip & Status Fix) ====================
 
-local noclipEnabled = false
-local noclipBtn = createButton("noclipOff", Color3.fromRGB(50, 50, 50), function()
-    noclipEnabled = not noclipEnabled
-    noclipBtn.Text = translations[currentLang][noclipEnabled and "noclipOn" or "noclipOff"]
-    noclipBtn.BackgroundColor3 = noclipEnabled and Color3.fromRGB(0, 150, 100) or Color3.fromRGB(50, 50, 50)
+-- Noclip thông minh (Chỉ xuyên tường, giữ nguyên chân đứng trên đất)
+local noclipActive = false
+local noclipBtn = makeBtn(contentUtils, "noclipOff", Color3.fromRGB(50, 50, 50), function()
+    noclipActive = not noclipActive
+    if noclipActive then
+        noclipBtn.Text = translations[currentLang].noclipOn
+        noclipBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 100)
+    else
+        noclipBtn.Text = translations[currentLang].noclipOff
+        noclipBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    end
 end)
 
 RunService.Stepped:Connect(function()
-    if noclipEnabled and localPlayer.Character then
+    if noclipActive and localPlayer.Character then
+        local humanoidRootPart = localPlayer.Character:FindFirstChild("HumanoidRootPart")
         for _, part in ipairs(localPlayer.Character:GetDescendants()) do
             if part:IsA("BasePart") then
-                part.CanCollide = false
+                -- Giữ nguyên phần chân (HumanoidRootPart hoặc LowerTorso/LeftFoot) để không bị rơi xuống void
+                if part.Name ~= "HumanoidRootPart" and part.Name ~= "LowerTorso" then
+                    part.CanCollide = false
+                else
+                    part.CanCollide = true
+                end
             end
         end
     end
 end)
 
-local antiVoidEnabled = false
+-- Anti-Void
+local antiVoidActive = false
 local antiVoidPart = nil
-local antiVoidBtn = createButton("antiVoidOff", Color3.fromRGB(50, 50, 50), function()
-    antiVoidEnabled = not antiVoidEnabled
-    antiVoidBtn.Text = translations[currentLang][antiVoidEnabled and "antiVoidOn" or "antiVoidOff"]
-    antiVoidBtn.BackgroundColor3 = antiVoidEnabled and Color3.fromRGB(0, 150, 100) or Color3.fromRGB(50, 50, 50)
-    
-    if antiVoidEnabled then
+local antiVoidBtn = makeBtn(contentUtils, "antiVoidOff", Color3.fromRGB(50, 50, 50), function()
+    antiVoidActive = not antiVoidActive
+    if antiVoidActive then
+        antiVoidBtn.Text = translations[currentLang].antiVoidOn
+        antiVoidBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 100)
         if not antiVoidPart then
             antiVoidPart = Instance.new("Part")
-            antiVoidPart.Name = "AntiVoidPlatform"
-            antiVoidPart.Size = Vector3.new(2000, 5, 2000)
+            antiVoidPart.Size = Vector3.new(3000, 5, 3000)
             antiVoidPart.Position = Vector3.new(0, -50, 0)
             antiVoidPart.Anchored = true
-            antiVoidPart.Transparency = 0.8
+            antiVoidPart.Transparency = 0.9
             antiVoidPart.Color = Color3.fromRGB(0, 255, 128)
             antiVoidPart.Parent = Workspace
         else
             antiVoidPart.Parent = Workspace
         end
     else
-        if antiVoidPart then
-            antiVoidPart.Parent = nil
-        end
+        antiVoidBtn.Text = translations[currentLang].antiVoidOff
+        antiVoidBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        if antiVoidPart then antiVoidPart.Parent = nil end
     end
 end)
 
-createButton("fastInteract", Color3.fromRGB(60, 100, 60), function()
+-- Fast Interact
+makeBtn(contentUtils, "fastInteract", Color3.fromRGB(60, 100, 60), function()
     for _, obj in ipairs(Workspace:GetDescendants()) do
         if obj:IsA("ProximityPrompt") then
             obj.HoldDuration = 0
@@ -312,33 +335,15 @@ createButton("fastInteract", Color3.fromRGB(60, 100, 60), function()
             obj.MaxActivationDistance = math.max(obj.MaxActivationDistance, 32)
         end
     end)
+    print("[√12] Đã kích hoạt nhặt vật phẩm tức thì.")
 end)
 
-createButton("langBtn", Color3.fromRGB(70, 50, 90), function()
-    if currentLang == "vi" then
-        currentLang = "en"
-    else
-        currentLang = "vi"
-    end
-    
+-- Nút đổi ngôn ngữ
+makeBtn(contentUtils, "langBtn", Color3.fromRGB(70, 50, 90), function()
+    currentLang = (currentLang == "vi") and "en" or "vi"
     titleLabel.Text = translations[currentLang].title
-    for _, child in ipairs(scrollingFrame:GetChildren()) do
-        if child:IsA("TextLabel") then
-            local key = child.Name:gsub("Section_", "")
-            if translations[currentLang][key] then
-                child.Text = translations[currentLang][key]
-            end
-        elseif child:IsA("TextButton") then
-            local key = child.Name:gsub("Btn_", "")
-            if key == "langBtn" then
-                child.Text = translations[currentLang].langBtn
-            elseif key == "noclipOff" or key == "noclipOn" then
-                child.Text = translations[currentLang][noclipEnabled and "noclipOn" or "noclipOff"]
-            elseif key == "antiVoidOff" or key == "antiVoidOn" then
-                child.Text = translations[currentLang][antiVoidEnabled and "antiVoidOn" or "antiVoidOff"]
-            elseif translations[currentLang][key] then
-                child.Text = translations[currentLang][key]
-            end
-        end
-    end
+    tabFixBtn.Text = translations[currentLang].tabFixLag
+    tabUtilsBtn.Text = translations[currentLang].tabUtils
+    noclipBtn.Text = translations[currentLang][noclipActive and "noclipOn" or "noclipOff"]
+    antiVoidBtn.Text = translations[currentLang][antiVoidActive and "antiVoidOn" or "antiVoidOff"]
 end)
