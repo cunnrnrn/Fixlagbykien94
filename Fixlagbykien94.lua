@@ -1,5 +1,5 @@
 -- ==========================================================
--- SCRIPT: √12kientomato Hub Pro Max (Updated with Loading & Language)
+-- SCRIPT: √12kientomato Hub Pro Max (Fixed UI Layout)
 -- ==========================================================
 
 local Players = game:GetService("Players")
@@ -11,7 +11,7 @@ local TweenService = game:GetService("TweenService")
 
 local localPlayer = Players.LocalPlayer
 
--- Biến ngôn ngữ mặc định: "vi" (Tiếng Việt) hoặc "en" (English)
+-- Ngôn ngữ mặc định
 local currentLang = "vi"
 
 local translations = {
@@ -27,7 +27,7 @@ local translations = {
         noclipOn = "👻 Bật/Tắt Noclip: ĐANG BẬT",
         antiVoidOff = "🛡️ Chống Rơi Xuống Void: ĐANG TẮT",
         antiVoidOn = "🛡️ Chống Rơi Xuống Void: ĐANG BẬT",
-        fastInteract = "⚡ Nhặt Vật Phẩm Nhanh (Instant Interact)",
+        fastInteract = "⚡ Nhặt Vật Phẩm Nhanh",
         langBtn = "🌐 Ngôn ngữ: Tiếng Việt"
     },
     en = {
@@ -42,7 +42,7 @@ local translations = {
         noclipOn = "👻 Toggle Noclip: ON",
         antiVoidOff = "🛡️ Anti-Void Platform: OFF",
         antiVoidOn = "🛡️ Anti-Void Platform: ON",
-        fastInteract = "⚡ Fast Collect (Instant Interact)",
+        fastInteract = "⚡ Fast Collect",
         langBtn = "🌐 Language: English"
     }
 }
@@ -80,13 +80,13 @@ if screenGui.Parent ~= CoreGui then
     screenGui.Parent = localPlayer:WaitForChild("PlayerGui")
 end
 
--- ==================== GIAO DIỆN LOADING TIẾN TRÌNH ====================
+-- ==================== GIAO DIỆN LOADING (ĐÃ FIX TỈ LỆ) ====================
 local loadingGui = Instance.new("Frame")
 loadingGui.Name = "LoadingGui"
-loadingGui.Size = UDim2.new(0, 300, 0, 110)
-loadingGui.Position = UDim2.new(0.5, -150, 0.5, -55)
+loadingGui.Size = UDim2.new(0, 280, 0, 100)
+loadingGui.Position = UDim2.new(0.5, -140, 0.5, -50)
 loadingGui.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-loadingGui.BorderColor3 = Color3.fromRGB(0, 255, 128)
+loadingGui.BorderSizePixel = 0
 loadingGui.Parent = screenGui
 
 local cornerLoad = Instance.new("UICorner")
@@ -94,27 +94,28 @@ cornerLoad.CornerRadius = UDim.new(0, 8)
 cornerLoad.Parent = loadingGui
 
 local loadTitle = Instance.new("TextLabel")
-loadTitle.Size = UDim2.new(1, 0, 0, 35)
+loadTitle.Size = UDim2.new(1, 0, 0, 30)
+loadTitle.Position = UDim2.new(0, 0, 0, 5)
 loadTitle.BackgroundTransparency = 1
 loadTitle.TextColor3 = Color3.fromRGB(0, 255, 128)
-loadTitle.TextSize = 15
+loadTitle.TextSize = 14
 loadTitle.Font = Enum.Font.GothamBold
 loadTitle.Text = "Đang tải √12kientomato Hub..."
 loadTitle.Parent = loadingGui
 
 local loadPercent = Instance.new("TextLabel")
-loadPercent.Size = UDim2.new(1, 0, 0, 25)
+loadPercent.Size = UDim2.new(1, 0, 0, 20)
 loadPercent.Position = UDim2.new(0, 0, 0, 35)
 loadPercent.BackgroundTransparency = 1
 loadPercent.TextColor3 = Color3.fromRGB(200, 200, 200)
-loadPercent.TextSize = 13
+loadPercent.TextSize = 12
 loadPercent.Font = Enum.Font.GothamSemibold
 loadPercent.Text = "0%"
 loadPercent.Parent = loadingGui
 
 local barBg = Instance.new("Frame")
-barBg.Size = UDim2.new(1, -40, 0, 10)
-barBg.Position = UDim2.new(0, 20, 0, 75)
+barBg.Size = UDim2.new(1, -40, 0, 8)
+barBg.Position = UDim2.new(0, 20, 0, 65)
 barBg.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 barBg.BorderSizePixel = 0
 barBg.Parent = loadingGui
@@ -133,36 +134,34 @@ local cornerBarFill = Instance.new("UICorner")
 cornerBarFill.CornerRadius = UDim.new(1, 0)
 cornerBarFill.Parent = barFill
 
--- ==================== NÚT TOGGLE & MENU CHÍNH (LOGO K) ====================
+-- ==================== NÚT TOGGLE & MENU CHÍNH ====================
 
--- Nút Toggle nổi với logo chữ K
 local toggleBtn = Instance.new("TextButton")
 toggleBtn.Name = "ToggleBtn"
-toggleBtn.Size = UDim2.new(0, 50, 0, 50)
+toggleBtn.Size = UDim2.new(0, 45, 0, 45)
 toggleBtn.Position = UDim2.new(0, 20, 0, 100)
 toggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-toggleBtn.BorderColor3 = Color3.fromRGB(0, 255, 128)
+toggleBtn.BorderSizePixel = 0
 toggleBtn.TextColor3 = Color3.fromRGB(0, 255, 128)
-toggleBtn.TextSize = 22
+toggleBtn.TextSize = 20
 toggleBtn.Font = Enum.Font.GothamBold
 toggleBtn.Text = "K"
 toggleBtn.Active = true
 toggleBtn.Draggable = true
-toggleBtn.Visible = false -- Ẩn đi trong lúc loading
+toggleBtn.Visible = false
 toggleBtn.Parent = screenGui
 
 local cornerToggle = Instance.new("UICorner")
 cornerToggle.CornerRadius = UDim.new(1, 0)
 cornerToggle.Parent = toggleBtn
 
--- Khung Menu chính
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 320, 0, 450)
-mainFrame.Position = UDim2.new(0.5, -160, 0.5, -225)
+mainFrame.Size = UDim2.new(0, 320, 0, 420)
+mainFrame.Position = UDim2.new(0.5, -160, 0.5, -210)
 mainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-mainFrame.BorderColor3 = Color3.fromRGB(50, 50, 50)
-mainFrame.Visible = false -- Ẩn đi trong lúc loading
+mainFrame.BorderSizePixel = 0
+mainFrame.Visible = false
 mainFrame.Active = true
 mainFrame.Draggable = true
 mainFrame.Parent = screenGui
@@ -171,7 +170,6 @@ local cornerMain = Instance.new("UICorner")
 cornerMain.CornerRadius = UDim.new(0, 8)
 cornerMain.Parent = mainFrame
 
--- Tiêu đề Menu
 local titleLabel = Instance.new("TextLabel")
 titleLabel.Size = UDim2.new(1, 0, 0, 40)
 titleLabel.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
@@ -185,12 +183,10 @@ local cornerTitle = Instance.new("UICorner")
 cornerTitle.CornerRadius = UDim.new(0, 8)
 cornerTitle.Parent = titleLabel
 
--- Nút ẩn/hiện menu khi bấm nút K
 toggleBtn.MouseButton1Click:Connect(function()
     mainFrame.Visible = not mainFrame.Visible
 end)
 
--- Container cuộn cho các chức năng
 local scrollingFrame = Instance.new("ScrollingFrame")
 scrollingFrame.Size = UDim2.new(1, -10, 1, -50)
 scrollingFrame.Position = UDim2.new(0, 5, 0, 45)
@@ -204,7 +200,6 @@ uiLayout.Padding = UDim.new(0, 8)
 uiLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 uiLayout.Parent = scrollingFrame
 
--- Các hàm tạo UI động hỗ trợ đa ngôn ngữ
 local function createSectionTitle(textKey)
     local lbl = Instance.new("TextLabel")
     lbl.Name = "Section_" .. textKey
@@ -224,6 +219,7 @@ local function createButton(textKey, color, callback)
     btn.Name = "Btn_" .. textKey
     btn.Size = UDim2.new(1, -10, 0, 35)
     btn.BackgroundColor3 = color or Color3.fromRGB(40, 40, 40)
+    btn.BorderSizePixel = 0
     btn.TextColor3 = Color3.fromRGB(255, 255, 255)
     btn.TextSize = 13
     btn.Font = Enum.Font.GothamSemibold
@@ -238,7 +234,7 @@ local function createButton(textKey, color, callback)
     return btn
 end
 
--- ==================== XÂY DỰNG CÁC TÍNH NĂNG TRONG MENU ====================
+-- ==================== CÁC CHỨC NĂNG ====================
 
 createSectionTitle("fixLagTitle")
 
@@ -314,7 +310,6 @@ end)
 
 createSectionTitle("utilityTitle")
 
--- Noclip Toggle
 local noclipEnabled = false
 local noclipBtn = createButton("noclipOff", Color3.fromRGB(50, 50, 50), function()
     noclipEnabled = not noclipEnabled
@@ -332,7 +327,6 @@ RunService.Stepped:Connect(function()
     end
 end)
 
--- Anti-Void Platform
 local antiVoidEnabled = false
 local antiVoidPart = nil
 local antiVoidBtn = createButton("antiVoidOff", Color3.fromRGB(50, 50, 50), function()
@@ -360,7 +354,6 @@ local antiVoidBtn = createButton("antiVoidOff", Color3.fromRGB(50, 50, 50), func
     end
 end)
 
--- Fast Interact
 createButton("fastInteract", Color3.fromRGB(60, 100, 60), function()
     for _, obj in ipairs(Workspace:GetDescendants()) do
         if obj:IsA("ProximityPrompt") then
@@ -376,15 +369,13 @@ createButton("fastInteract", Color3.fromRGB(60, 100, 60), function()
     end)
 end)
 
--- Nút đổi ngôn ngữ (Language Switcher)
-local langBtn = createButton("langBtn", Color3.fromRGB(70, 50, 90), function()
+createButton("langBtn", Color3.fromRGB(70, 50, 90), function()
     if currentLang == "vi" then
         currentLang = "en"
     else
         currentLang = "vi"
     end
     
-    -- Cập nhật lại toàn bộ chữ trong menu theo ngôn ngữ mới
     titleLabel.Text = translations[currentLang].title
     for _, child in ipairs(scrollingFrame:GetChildren()) do
         if child:IsA("TextLabel") then
@@ -407,36 +398,27 @@ local langBtn = createButton("langBtn", Color3.fromRGB(70, 50, 90), function()
     end
 end)
 
--- ==================== CHẠY TIẾN TRÌNH LOADING ====================
+-- ==================== CHẠY LOADING & HIỆN MENU ====================
 task.spawn(function()
     for i = 1, 100 do
         loadPercent.Text = i .. "%"
         barFill.Size = UDim2.new(i / 100, 0, 1, 0)
         
-        if i == 25 then
+        if i == 30 then
             loadTitle.Text = "Đang quét môi trường & hiệu ứng..."
-        elseif i == 60 then
+        elseif i == 70 then
             loadTitle.Text = "Đang thiết lập giao diện chữ K..."
-        elseif i == 90 then
+        elseif i == 95 then
             loadTitle.Text = "Hoàn tất hệ thống!"
         end
         
-        task.wait(0.015)
+        task.wait(0.01)
     end
     
-    -- Hiệu ứng tắt khung loading và bật menu chính lên
-    local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-    TweenService:Create(loadingGui, tweenInfo, {BackgroundTransparency = 1}):Play()
-    for _, child in ipairs(loadingGui:GetChildren()) do
-        if child:IsA("TextLabel") or child:IsA("Frame") then
-            TweenService:Create(child, tweenInfo, {TextTransparency = 1, BackgroundTransparency = 1}):Play()
-        end
-    end
-    
-    task.wait(0.3)
+    task.wait(0.2)
     loadingGui:Destroy()
     
-    -- Hiện nút logo K và Menu chính
+    -- Bật hiển thị nút logo K và Menu chính
     toggleBtn.Visible = true
     mainFrame.Visible = true
 end)
