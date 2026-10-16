@@ -1,5 +1,5 @@
 -- ==========================================================
--- SCRIPT: √12kientomato Hub Pro Max (Fixed UI Layout)
+-- SCRIPT: √12kientomato Hub Pro Max (No Loading, Direct Open)
 -- ==========================================================
 
 local Players = game:GetService("Players")
@@ -7,7 +7,6 @@ local RunService = game:GetService("RunService")
 local Lighting = game:GetService("Lighting")
 local Workspace = game:GetService("Workspace")
 local CoreGui = game:GetService("CoreGui")
-local TweenService = game:GetService("TweenService")
 
 local localPlayer = Players.LocalPlayer
 
@@ -80,60 +79,6 @@ if screenGui.Parent ~= CoreGui then
     screenGui.Parent = localPlayer:WaitForChild("PlayerGui")
 end
 
--- ==================== GIAO DIỆN LOADING (ĐÃ FIX TỈ LỆ) ====================
-local loadingGui = Instance.new("Frame")
-loadingGui.Name = "LoadingGui"
-loadingGui.Size = UDim2.new(0, 280, 0, 100)
-loadingGui.Position = UDim2.new(0.5, -140, 0.5, -50)
-loadingGui.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-loadingGui.BorderSizePixel = 0
-loadingGui.Parent = screenGui
-
-local cornerLoad = Instance.new("UICorner")
-cornerLoad.CornerRadius = UDim.new(0, 8)
-cornerLoad.Parent = loadingGui
-
-local loadTitle = Instance.new("TextLabel")
-loadTitle.Size = UDim2.new(1, 0, 0, 30)
-loadTitle.Position = UDim2.new(0, 0, 0, 5)
-loadTitle.BackgroundTransparency = 1
-loadTitle.TextColor3 = Color3.fromRGB(0, 255, 128)
-loadTitle.TextSize = 14
-loadTitle.Font = Enum.Font.GothamBold
-loadTitle.Text = "Đang tải √12kientomato Hub..."
-loadTitle.Parent = loadingGui
-
-local loadPercent = Instance.new("TextLabel")
-loadPercent.Size = UDim2.new(1, 0, 0, 20)
-loadPercent.Position = UDim2.new(0, 0, 0, 35)
-loadPercent.BackgroundTransparency = 1
-loadPercent.TextColor3 = Color3.fromRGB(200, 200, 200)
-loadPercent.TextSize = 12
-loadPercent.Font = Enum.Font.GothamSemibold
-loadPercent.Text = "0%"
-loadPercent.Parent = loadingGui
-
-local barBg = Instance.new("Frame")
-barBg.Size = UDim2.new(1, -40, 0, 8)
-barBg.Position = UDim2.new(0, 20, 0, 65)
-barBg.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-barBg.BorderSizePixel = 0
-barBg.Parent = loadingGui
-
-local cornerBarBg = Instance.new("UICorner")
-cornerBarBg.CornerRadius = UDim.new(1, 0)
-cornerBarBg.Parent = barBg
-
-local barFill = Instance.new("Frame")
-barFill.Size = UDim2.new(0, 0, 1, 0)
-barFill.BackgroundColor3 = Color3.fromRGB(0, 255, 128)
-barFill.BorderSizePixel = 0
-barFill.Parent = barBg
-
-local cornerBarFill = Instance.new("UICorner")
-cornerBarFill.CornerRadius = UDim.new(1, 0)
-cornerBarFill.Parent = barFill
-
 -- ==================== NÚT TOGGLE & MENU CHÍNH ====================
 
 local toggleBtn = Instance.new("TextButton")
@@ -148,7 +93,7 @@ toggleBtn.Font = Enum.Font.GothamBold
 toggleBtn.Text = "K"
 toggleBtn.Active = true
 toggleBtn.Draggable = true
-toggleBtn.Visible = false
+toggleBtn.Visible = true
 toggleBtn.Parent = screenGui
 
 local cornerToggle = Instance.new("UICorner")
@@ -161,7 +106,7 @@ mainFrame.Size = UDim2.new(0, 320, 0, 420)
 mainFrame.Position = UDim2.new(0.5, -160, 0.5, -210)
 mainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 mainFrame.BorderSizePixel = 0
-mainFrame.Visible = false
+mainFrame.Visible = true
 mainFrame.Active = true
 mainFrame.Draggable = true
 mainFrame.Parent = screenGui
@@ -396,29 +341,4 @@ createButton("langBtn", Color3.fromRGB(70, 50, 90), function()
             end
         end
     end
-end)
-
--- ==================== CHẠY LOADING & HIỆN MENU ====================
-task.spawn(function()
-    for i = 1, 100 do
-        loadPercent.Text = i .. "%"
-        barFill.Size = UDim2.new(i / 100, 0, 1, 0)
-        
-        if i == 30 then
-            loadTitle.Text = "Đang quét môi trường & hiệu ứng..."
-        elseif i == 70 then
-            loadTitle.Text = "Đang thiết lập giao diện chữ K..."
-        elseif i == 95 then
-            loadTitle.Text = "Hoàn tất hệ thống!"
-        end
-        
-        task.wait(0.01)
-    end
-    
-    task.wait(0.2)
-    loadingGui:Destroy()
-    
-    -- Bật hiển thị nút logo K và Menu chính
-    toggleBtn.Visible = true
-    mainFrame.Visible = true
 end)
